@@ -592,13 +592,23 @@ static void esp32_soc_realize(DeviceState *dev, Error **errp)
 
     qdev_connect_gpio_out_named(DEVICE(&s->gpio), ESP32_GPIOS, 4, qdev_get_gpio_in_named(disp, "backlight", 0));
     qdev_connect_gpio_out_named(DEVICE(&s->gpio), ESP32_GPIOS, 16, qdev_get_gpio_in_named(disp, "cmd", 0));
-
+    /*
+    // T-Display buttons:
     qemu_irq in0=qdev_get_gpio_in_named(DEVICE(&s->gpio), ESP32_GPIOS_IN, 0);
     qemu_irq in35=qdev_get_gpio_in_named(DEVICE(&s->gpio), ESP32_GPIOS_IN, 35);
     qdev_connect_gpio_out_named(disp, "buttons", 0, in0);
     qdev_connect_gpio_out_named(disp, "buttons", 1, in35);
     qdev_connect_gpio_out_named(disp1, "buttons", 0, in0);
     qdev_connect_gpio_out_named(disp1, "buttons", 1, in35);
+    */
+
+    // Lightning Piggy buttons:
+    qemu_irq in32=qdev_get_gpio_in_named(DEVICE(&s->gpio), ESP32_GPIOS_IN, 32); // reset button
+    qemu_irq in39=qdev_get_gpio_in_named(DEVICE(&s->gpio), ESP32_GPIOS_IN, 39); // General Purpose button
+    qdev_connect_gpio_out_named(disp, "buttons", 0, in32);
+    qdev_connect_gpio_out_named(disp, "buttons", 1, in39);
+    qdev_connect_gpio_out_named(disp1, "buttons", 0, in32);
+    qdev_connect_gpio_out_named(disp1, "buttons", 1, in39);
 
     /* Emulation of a fake register used to mark that the chip is run via QEMU */
     MemoryRegion *apbctrl_mem = g_new(MemoryRegion, 1);
