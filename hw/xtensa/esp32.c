@@ -581,10 +581,12 @@ static void esp32_soc_realize(DeviceState *dev, Error **errp)
     they share a single console*/
     DeviceState *disp=ssi_create_peripheral(s->spi[2].spi, "st7789v");
     DeviceState *disp1=ssi_create_peripheral(s->spi[3].spi, "st7789v");
-    ssi_create_peripheral(s->rmt.rmt, "rgbled");
+    // Disabled for Lightning Piggy:
+    //ssi_create_peripheral(s->rmt.rmt, "rgbled");
 
-    ServoState *servo=servo_create_simple(OBJECT(s),"servo");
-    qdev_connect_gpio_out_named(DEVICE(&s->gpio), ESP32_GPIOS, 27, qdev_get_gpio_in(DEVICE(servo), 0));
+    // Disabled for Lightning Piggy:
+    //ServoState *servo=servo_create_simple(OBJECT(s),"servo");
+    //qdev_connect_gpio_out_named(DEVICE(&s->gpio), ESP32_GPIOS, 27, qdev_get_gpio_in(DEVICE(servo), 0));
 
 	// use gpio 16 and 4 for cmd and backlight of both displays
 //    split_irq_from_named(DEVICE(&s->gpio),ESP32_GPIOS, 16, qdev_get_gpio_in_named(disp, "cmd", 0), qdev_get_gpio_in_named(disp1, "cmd", 0));
@@ -847,11 +849,12 @@ static void esp32_machine_init_i2c(Esp32SocState *s)
      * If we find a way to decouple peripheral reset from sysbus reset,
      * we can move them to the sysbus and thus enable creation of i2c devices.
      */
-    DeviceState *i2c_master = DEVICE(&s->i2c[0]);
-    I2CBus* i2c_bus = I2C_BUS(qdev_get_child_bus(i2c_master, "i2c"));
-    I2CSlave* tmp105 = i2c_slave_create_simple(i2c_bus, "tmp105", 0x48);
-    object_property_set_int(OBJECT(tmp105), "temperature", 25 * 1000, &error_fatal);
-    i2c_slave_create_simple(i2c_bus, "mpu6050", 0x68);
+    // Disabled for Lightning Piggy:
+    //DeviceState *i2c_master = DEVICE(&s->i2c[0]);
+    //I2CBus* i2c_bus = I2C_BUS(qdev_get_child_bus(i2c_master, "i2c"));
+    //I2CSlave* tmp105 = i2c_slave_create_simple(i2c_bus, "tmp105", 0x48);
+    //object_property_set_int(OBJECT(tmp105), "temperature", 25 * 1000, &error_fatal);
+    //i2c_slave_create_simple(i2c_bus, "mpu6050", 0x68);
 }
 
 static void esp32_machine_init_openeth(Esp32SocState *ss)
